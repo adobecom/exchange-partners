@@ -26,6 +26,11 @@ const CONFIG = {
   // imsScope: 'AdobeID,openid,gnav',
   // geoRouting: 'off',
   // fallbackRouting: 'off',
+  jarvis: {
+    id: 'milo',
+    version: '1.0',
+    onDemand: false,
+  },
   decorateArea,
   locales: {
     '': { ietf: 'en-US', tk: 'hah7vzn.css' },
