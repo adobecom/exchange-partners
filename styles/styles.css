@@ -6,6 +6,13 @@
  * 
  *
  */
+
+ .section.contact.m-spacing .columns.contained.middle .row-1 .col-2 p {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+ }
  
  @media (min-width: 77rem) {
      .marquee.large .foreground {
@@ -13,5 +20,5 @@
          align-items: center;
          padding: 0;
          gap: 0;
-     }
+     } 
  }
