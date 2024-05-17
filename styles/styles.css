@@ -23,12 +23,21 @@
     gap: 20px;
     align-items: center;
  }
+
  
  @media (min-width: 77rem) {
-     .marquee.large .foreground {
-         flex-direction: row;
-         align-items: center;
-         padding: 0;
-         gap: 0;
-     } 
+    .marquee.large .foreground {
+       flex-direction: row;
+       align-items: center;
+       padding: 0;
+       gap: 0;
+    }
+
+
+    .section.contact .text-block.m-spacing .foreground>div.body-m {
+       display: flex;
+       flex-direction: row;
+       gap: 40px;
+       align-items: center;
+    }
  }
