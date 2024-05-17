@@ -24,8 +24,11 @@
     align-items: center;
  }
 
- 
  @media (min-width: 77rem) {
+    :root {
+       --grid-container-width: 1400px;
+    }
+
     .marquee.large .foreground {
        flex-direction: row;
        align-items: center;
@@ -37,7 +40,7 @@
     .section.contact .text-block.m-spacing .foreground>div.body-m {
        display: flex;
        flex-direction: row;
-       gap: 40px;
+       gap: 20px;
        align-items: center;
     }
  }
