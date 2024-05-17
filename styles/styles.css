@@ -37,7 +37,7 @@
     }
 
 
-    .section.contact .text-block.m-spacing .foreground>div.body-m {
+    .section.contact .text-block.s-spacing .foreground>div.body-m {
        display: flex;
        flex-direction: row;
        gap: 20px;
