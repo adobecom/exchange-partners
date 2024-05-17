@@ -12,6 +12,11 @@
     background: rgb(250, 250, 250);
  }
 
+ .section.contact.m-spacing .columns.contained.middle h2 {
+    position: relative;
+    bottom: 3vh;
+ }
+
  .section.contact.m-spacing .columns.contained.middle .row-1 .col-2 p {
     display: flex;
     flex-direction: row;
