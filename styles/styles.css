@@ -46,7 +46,7 @@
       padding: 0;
     }
 
-    .section.contact .text-block.s-spacing .foreground > div.body-m {
+    .section.contact .text-block.s-spacing.con-block .foreground > div{
        display: flex;
        flex-direction: row;
        gap: 20px;
