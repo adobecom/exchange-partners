@@ -1,0 +1,31 @@
+version: 1
+auto-generated: true
+indices:
+  default:
+    include:
+      - /**
+    exclude:
+      - /drafts/**
+      - /block-library/**
+      - /template-*
+      - /tools/**
+    target: /query-index.json
+    properties:
+      lastModified:
+        select: none
+        value: parseTimestamp(headers["last-modified"], "ddd, DD MMM YYYY hh:mm:ss GMT")
+      content:
+        select: main
+        value: textContent(el)
+      template:
+        select: head > meta[name="template"]
+        value: attribute(el, "content")
+      title:
+        select: head > meta[property="og:title"]
+        value: attribute(el, "content")
+      image:
+        select: head > meta[property="og:image"]
+        value: match(attribute(el, "content"), "https:\/\/[^/]+(/.*)")
+      description:
+        select: head > meta[property="og:description"]
+        value: attribute(el, "content")
