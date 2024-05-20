@@ -9,7 +9,7 @@ indices:
       - /block-library/**
       - /template-*
       - /tools/**
-    target: /query-index.json
+    target: /exchange/query-index.json
     properties:
       lastModified:
         select: none
