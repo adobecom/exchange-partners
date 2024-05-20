@@ -12,7 +12,7 @@ indices:
     target: /query-index.json
     properties:
       publisheddate:
-        select: head > meta[name="publisheddate"]
+        select: head > meta[name="publication-date"]
         value: attribute(el, "content")
       lastModified:
         select: none
