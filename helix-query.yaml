@@ -11,7 +11,7 @@ indices:
       - /tools/**
     target: /query-index.json
     properties:
-      publisheddate:
+      publishedDate:
         select: head > meta[name="publication-date"]
         value: attribute(el, "content")
       lastModified:
