@@ -23,7 +23,13 @@
     .section.contact .text-block.s-spacing.con-block .foreground > div{
        display: flex;
        flex-direction: row;
-       gap: 20px;
+       gap: 30px;
        align-items: center;
+    }
+
+    /* The below CSS is for Contact Details to the right */
+
+    .section.contact .text-block.s-spacing.con-block .foreground > div [class^="body-"] {
+      margin: 0;
     }
  }
