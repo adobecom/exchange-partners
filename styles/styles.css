@@ -7,45 +7,20 @@
  *
  */
 
- .section.contact.m-spacing .columns.contained.middle {
-    padding: 50px;
-    background: rgb(250, 250, 250);
- }
-
- .section.contact.m-spacing .columns.contained.middle h2 {
-    position: relative;
-    bottom: 3vh;
- }
-
- .section.contact.m-spacing .columns.contained.middle .row-1 .col-2 p {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    align-items: center;
- }
-
  @media (min-width: 77rem) {
     :root {
        --grid-container-width: 1400px;
     }
 
-    .marquee.large .foreground {
-       flex-direction: row;
-       align-items: center;
-       padding: 0;
-       gap: 0;
+    /* To make the image size a bit smaller for marquee large block */
+
+    .marquee .foreground .asset {
+      display: flex;
+      flex-direction: row;
     }
 
-    /* The below CSS is for Ribbon-Footer */
-
-    .section.ribbon-footer[class*="-up"] .media .foreground > .media-row .image {
-      margin-bottom: 0;
-    }
-
-     /* The below CSS is for Ribbon-Footer */
-
-    .section.ribbon-footer[class*="-up"] .media {
-      padding: 0;
+    .marquee .foreground .asset img {
+      width: 75%;
     }
 
      /* The below CSS is for Contact Details to the right */
@@ -53,13 +28,13 @@
     .section.contact .text-block.s-spacing.con-block .foreground > div{
        display: flex;
        flex-direction: row;
-       gap: 20px;
+       gap: 30px;
        align-items: center;
     }
-    
-     /* The below CSS is for Ribbon-Footer */
 
-    .section.ribbon-footer[class*="-up"] .text-block:not(.legal, .link-farm) .foreground > div {
-      justify-content: center;
+    /* The below CSS is for Contact Details to the right */
+
+    .section.contact .text-block.s-spacing.con-block .foreground > div [class^="body-"] {
+      margin: 0;
     }
  }
