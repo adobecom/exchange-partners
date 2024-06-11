@@ -7,9 +7,15 @@
  *
  */
 
+
+
  @media (min-width: 77rem) {
+
     :root {
        --grid-container-width: 1400px;
+       --type-body-m-size: calc(var(--font-size-multiplier, 1) * 14px);
+       --type-heading-l-size: calc(var(--font-size-multiplier, 1) * 18px);
+       --spacing-xxxl: 204px;
     }
 
     /* To make the image size a bit smaller for marquee large block */
