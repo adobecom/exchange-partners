@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { setLibs, decorateArea } from './utils.js';
+import { setLibs, decorateArea, externalLinks } from './utils.js';
 
 // Add project-wide style path here.
 const STYLES = '/styles/styles.css';
@@ -62,3 +62,6 @@ const miloLibs = setLibs(LIBS);
   console.log(config);
   await loadArea();
 }());
+
+//Links opening in new tab
+externalLinks();
