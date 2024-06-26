@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { setLibs, decorateArea, externalLinks } from './utils.js';
+import { setLibs, decorateArea } from './utils.js';
 
 // Add project-wide style path here.
 const STYLES = '/styles/styles.css';
@@ -61,7 +61,13 @@ const miloLibs = setLibs(LIBS);
   const config = setConfig({ ...CONFIG, miloLibs });
   console.log(config);
   await loadArea();
+  loadDelayed();
 }());
 
-//Links opening in new tab
-externalLinks();
+function loadDelayed() {
+  // eslint-disable-next-line import/no-cycle
+  window.setTimeout(() => import('./delayed.js'), 1000);
+  // load anything that can be postponed to the latest here
+}
+
+
