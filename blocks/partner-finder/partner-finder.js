@@ -6,9 +6,9 @@ import {
     buildArticleCard,
   } from './partner-finder-helpers.js';
   
-  import { createTag, getConfig, createIntersectionObserver } from '../../scripts/utils.js';
-  import { replaceKey } from '../../scripts/placeholders.js';
-  import { updateLinkWithLangRoot } from '../../scripts/helpers.js';
+  import { createTag, getConfig, createIntersectionObserver } from '../../utils/utils.js';
+  import { replaceKey } from '../../features/placeholders.js';
+  import { updateLinkWithLangRoot } from '../../utils/helpers.js';
   
   const ROOT_MARGIN = 50;
   

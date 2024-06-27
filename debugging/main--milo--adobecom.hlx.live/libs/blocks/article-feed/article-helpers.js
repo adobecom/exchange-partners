@@ -1,4 +1,3 @@
-
 import { getConfig } from '../../utils/utils.js';
 import * as taxonomyLibrary from '../../scripts/taxonomy.js';
 import { updateLinkWithLangRoot } from '../../utils/helpers.js';
@@ -119,7 +118,6 @@ export async function loadTaxonomy() {
   const config = getConfig();
   console.log(config);
   const taxonomyRoot = config.taxonomyRoot || '/topics';
-  console.log(taxonomyRoot);
   taxonomyModule = await taxonomyLibrary.default(config, taxonomyRoot);
   if (taxonomyModule) {
     // taxonomy loaded, post loading adjustments
