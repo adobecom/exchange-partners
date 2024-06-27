@@ -60,3 +60,11 @@ export function decorateArea(area = document) {
 export async function useMiloSample() {
   const { createTag } = await import(`${getLibs()}/utils/utils.js`);
 }
+
+export function externalLinks() {
+  const links = document.querySelectorAll('a[href]');
+  links.forEach((linkItem) => {
+    const linkValue = linkItem.getAttribute('href');
+    linkItem.setAttribute('target', '_blank');
+  });
+}

@@ -61,4 +61,13 @@ const miloLibs = setLibs(LIBS);
   const config = setConfig({ ...CONFIG, miloLibs });
   console.log(config);
   await loadArea();
+  loadDelayed();
 }());
+
+function loadDelayed() {
+  // eslint-disable-next-line import/no-cycle
+  window.setTimeout(() => import('./delayed.js'), 1000);
+  // load anything that can be postponed to the latest here
+}
+
+

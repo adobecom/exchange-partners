@@ -7,9 +7,15 @@
  *
  */
 
+
+
  @media (min-width: 77rem) {
+
     :root {
-       --grid-container-width: 1400px;
+       /* --grid-container-width: 1400px; */
+       --type-body-m-size: calc(var(--font-size-multiplier, 1) * 14px);
+       --type-heading-l-size: calc(var(--font-size-multiplier, 1) * 18px);
+       --spacing-xxxl: 304px;
     }
 
     /* To make the image size a bit smaller for marquee large block */
@@ -25,11 +31,15 @@
 
      /* The below CSS is for Contact Details to the right */
 
-    .section.contact .text-block.s-spacing.con-block .foreground > div{
+    .section.contact .text-block.con-block.special .foreground > div{
        display: flex;
        flex-direction: row;
        gap: 30px;
-       align-items: center;
+       align-items: flex-start;
+    }
+
+    .section.contact .text-block.con-block.special .foreground > div p:last-child {
+      margin-top: 0;
     }
 
     /* The below CSS is for Contact Details to the right */
