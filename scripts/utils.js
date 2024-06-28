@@ -68,3 +68,25 @@ export function externalLinks() {
     linkItem.setAttribute('target', '_blank');
   });
 }
+
+/*
+ * ------------------------------------------------------------
+ * Edit above at your own risk.
+ *
+ * Note: The below code is just for Partner Finder functionality 
+ * ------------------------------------------------------------
+ */
+
+/**
+ * The decision engine for where to get Milo's libs from.
+ */
+
+const miloLibs = setLibs('/libs');
+
+
+const { createTag, localizeLink, getConfig, loadStyle, createIntersectionObserver } = await import(`${miloLibs}/utils/utils.js`);
+const { updateLinkWithLangRoot } = await import(`${miloLibs}/utils/helpers.js`);
+const { replaceKey } = await import(`${miloLibs}/features/placeholders.js`);
+
+export { createTag, loadStyle, localizeLink, createIntersectionObserver, getConfig, updateLinkWithLangRoot, replaceKey };
+

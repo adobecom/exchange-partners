@@ -118,6 +118,7 @@ export async function loadTaxonomy() {
   const config = getConfig();
   console.log(config);
   const taxonomyRoot = config.taxonomyRoot || '/topics';
+  console.log(taxonomyRoot);
   taxonomyModule = await taxonomyLibrary.default(config, taxonomyRoot);
   if (taxonomyModule) {
     // taxonomy loaded, post loading adjustments
