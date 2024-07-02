@@ -33,6 +33,8 @@ const TAXONOMY_FIELDS = Object.freeze({
   const PRODUCTS = Object.freeze('products');
   const INDUSTRIES = Object.freeze('industries');
   const INTERNALS = Object.freeze('internals');
+  const GEOGRAPHY = Object.freeze('geography');
+
   
   /**
    * Filters a string to become a filename of a url
@@ -172,6 +174,7 @@ const TAXONOMY_FIELDS = Object.freeze({
           INDUSTRIES,
           INTERNALS,
           PRODUCTS,
+          GEOGRAPHY,
           NO_INTERLINKS,
   
           lookup(topic) {

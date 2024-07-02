@@ -196,6 +196,7 @@ import {
     if (checked) { checked.checked = false; }
     delete blogIndex.config.selectedProducts;
     delete blogIndex.config.selectedIndustries;
+    delete blogIndex.config.selectedGeography;
     // eslint-disable-next-line no-use-before-define
     applyCurrentFilters(block);
   }
@@ -264,6 +265,7 @@ import {
     });
     delete blogIndex.config.selectedProducts;
     delete blogIndex.config.selectedIndustries;
+    delete blogIndex.config.selectedGeography;
     applyCurrentFilters(block);
   }
   
@@ -345,6 +347,7 @@ import {
       // sampleRUM('apply-topic-filter');
       delete config.selectedProducts;
       delete config.selectedIndustries;
+      delete config.selectedGeography;
       closeCurtain();
       disableSearch(`${type}-filter-button`);
       applyCurrentFilters(block, config, 'close');
@@ -361,7 +364,7 @@ import {
   
   async function filterArticles(feed, limit, offset) {
     /* filter posts by category, tag and author */
-    const FILTER_NAMES = ['tags', 'topics', 'selectedProducts', 'selectedIndustries', 'author', 'category', 'exclude'];
+    const FILTER_NAMES = ['tags', 'topics', 'selectedProducts', 'selectedIndustries', 'selectedGeography', 'author', 'category', 'exclude'];
   
     const filters = Object.keys(blogIndex.config).reduce((prev, key) => {
       if (FILTER_NAMES.includes(key)) {
@@ -379,7 +382,7 @@ import {
       const beforeFiltering = new Date();
   
       const KEYWORDS = ['exclude', 'tags', 'topics'];
-      const SELECTED = ['selectedProducts', 'selectedIndustries'];
+      const SELECTED = ['selectedProducts', 'selectedIndustries', 'selectedGeography'];
   
       /* filter and ignore if already in result */
       const feedChunk = indexChunk.filter((article) => {
@@ -392,6 +395,17 @@ import {
             return key === 'exclude' ? !matchedFilter : matchedFilter;
           }
           if (SELECTED.includes(key)) {
+            if (filters.selectedIndustries && filters.selectedGeography && filters.selectedProducts) {
+              // match industry && geography && product
+              const matchIndustry = filters.selectedIndustries
+                .some((val) => (isInList(articleTaxonomy?.allTopics, val)));
+              const matchGeography = filters.selectedGeography
+                .some((val) => (isInList(articleTaxonomy?.allTopics, val)));
+              const matchProduct = filters.selectedProducts
+                .some((val) => (isInList(articleTaxonomy?.allTopics, val)));
+              // return matchIndustry && matchGeography && matchProduct;
+              return (matchIndustry) ? (matchGeography) ? (matchProduct) ? (matchIndustry && matchGeography && matchProduct): (matchIndustry && matchGeography): (matchProduct) ? (matchIndustry && matchProduct): (matchIndustry): (matchGeography) ? (matchProduct) ? (matchGeography && matchProduct): (matchGeography): (matchProduct) ? (matchProduct): (matchIndustry && matchGeography && matchProduct);
+            }
             if (filters.selectedProducts && filters.selectedIndustries) {
               // match product && industry
               const matchProduct = filters.selectedProducts
@@ -400,6 +414,23 @@ import {
                 .some((val) => (isInList(articleTaxonomy?.allTopics, val)));
               return matchProduct && matchIndustry;
             }
+            if (filters.selectedProducts && filters.selectedGeography) {
+              // match product && geography
+              const matchProduct = filters.selectedProducts
+                .some((val) => (isInList(articleTaxonomy?.allTopics, val)));
+              const matchGeography = filters.selectedGeography
+                .some((val) => (isInList(articleTaxonomy?.allTopics, val)));
+              return matchProduct && matchGeography;
+            }
+            if (filters.selectedIndustries && filters.selectedGeography) {
+              // match industry && geography
+              const matchIndustry = filters.selectedIndustries
+                .some((val) => (isInList(articleTaxonomy?.allTopics, val)));
+              const matchGeography = filters.selectedGeography
+                .some((val) => (isInList(articleTaxonomy?.allTopics, val)));
+              return matchIndustry && matchGeography;
+            }
+
             const matchedFilter = filters[key]
               .some((val) => isInList(articleTaxonomy.allTopics, val));
             return matchedFilter;
@@ -446,7 +477,7 @@ import {
     if (articles.length) {
       // results were found
       container.remove();
-    } else if (blogIndex.config.selectedProducts || blogIndex.config.selectedIndustries) {
+    } else if (blogIndex.config.selectedProducts || blogIndex.config.selectedIndustries || blogIndex.config.selectedGeography) {
       // no user filtered results were found
       spinner.remove();
       const noMatches = document.createElement('p');
@@ -500,8 +531,9 @@ import {
   
     const productsDropdown = await buildFilter('products', taxonomy, articleFeedEl, blogIndex.config);
     const industriesDropdown = await buildFilter('industries', taxonomy, articleFeedEl, blogIndex.config);
+    const geographyDropdown = await buildFilter('geography', taxonomy, articleFeedEl, blogIndex.config);
   
-    filterWrapper.append(filterText, productsDropdown, industriesDropdown);
+    filterWrapper.append(filterText, productsDropdown, industriesDropdown, geographyDropdown);
     filterContainer.append(filterWrapper);
   
     parent.parentElement.insertBefore(filterContainer, parent);
