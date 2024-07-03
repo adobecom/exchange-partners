@@ -22,6 +22,9 @@ import {
     config: {},
     offsetData: [],
   };
+
+  var filterArray = [];
+  var SELECTED = [];
   
   /**
    * Sanitizes a name for use as class name.
@@ -194,9 +197,7 @@ import {
     const checked = document
       .querySelector(`input[name='${target.textContent}']`);
     if (checked) { checked.checked = false; }
-    delete blogIndex.config.selectedProducts;
-    delete blogIndex.config.selectedIndustries;
-    delete blogIndex.config.selectedGeography;
+    SELECTED.forEach((selectedItems) => { delete blogIndex.config[selectedItems];})
     // eslint-disable-next-line no-use-before-define
     applyCurrentFilters(block);
   }
@@ -263,9 +264,7 @@ import {
       const checked = dropdown.querySelectorAll('input:checked');
       checked.forEach((box) => { box.checked = false; });
     });
-    delete blogIndex.config.selectedProducts;
-    delete blogIndex.config.selectedIndustries;
-    delete blogIndex.config.selectedGeography;
+    SELECTED.forEach((selectedItems) => { delete blogIndex.config[selectedItems];})
     applyCurrentFilters(block);
   }
   
@@ -345,9 +344,7 @@ import {
     applyBtn.textContent = await replacePlaceholder('apply');
     applyBtn.addEventListener('click', () => {
       // sampleRUM('apply-topic-filter');
-      delete config.selectedProducts;
-      delete config.selectedIndustries;
-      delete config.selectedGeography;
+      SELECTED.forEach((selectedItems) => { delete config[selectedItems];})
       closeCurtain();
       disableSearch(`${type}-filter-button`);
       applyCurrentFilters(block, config, 'close');
@@ -364,13 +361,15 @@ import {
   
   async function filterArticles(feed, limit, offset) {
     /* filter posts by category, tag and author */
-    const FILTER_NAMES = ['tags', 'topics', 'selectedProducts', 'selectedIndustries', 'selectedGeography', 'author', 'category', 'exclude'];
-  
+
+    const FILTER_NAMES = ['tags', 'topics', 'author', 'category', 'exclude'];
+    FILTER_NAMES.push(...SELECTED);
+
     const filters = Object.keys(blogIndex.config).reduce((prev, key) => {
       if (FILTER_NAMES.includes(key)) {
         prev[key] = blogIndex.config[key].split(',').map((e) => e.toLowerCase().trim());
       }
-  
+
       return prev;
     }, {});
   
@@ -382,7 +381,6 @@ import {
       const beforeFiltering = new Date();
   
       const KEYWORDS = ['exclude', 'tags', 'topics'];
-      const SELECTED = ['selectedProducts', 'selectedIndustries', 'selectedGeography'];
   
       /* filter and ignore if already in result */
       const feedChunk = indexChunk.filter((article) => {
@@ -395,42 +393,6 @@ import {
             return key === 'exclude' ? !matchedFilter : matchedFilter;
           }
           if (SELECTED.includes(key)) {
-            if (filters.selectedIndustries && filters.selectedGeography && filters.selectedProducts) {
-              // match industry && geography && product
-              const matchIndustry = filters.selectedIndustries
-                .some((val) => (isInList(articleTaxonomy?.allTopics, val)));
-              const matchGeography = filters.selectedGeography
-                .some((val) => (isInList(articleTaxonomy?.allTopics, val)));
-              const matchProduct = filters.selectedProducts
-                .some((val) => (isInList(articleTaxonomy?.allTopics, val)));
-              // return matchIndustry && matchGeography && matchProduct;
-              return (matchIndustry) ? (matchGeography) ? (matchProduct) ? (matchIndustry && matchGeography && matchProduct): (matchIndustry && matchGeography): (matchProduct) ? (matchIndustry && matchProduct): (matchIndustry): (matchGeography) ? (matchProduct) ? (matchGeography && matchProduct): (matchGeography): (matchProduct) ? (matchProduct): (matchIndustry && matchGeography && matchProduct);
-            }
-            if (filters.selectedProducts && filters.selectedIndustries) {
-              // match product && industry
-              const matchProduct = filters.selectedProducts
-                .some((val) => (isInList(articleTaxonomy?.allTopics, val)));
-              const matchIndustry = filters.selectedIndustries
-                .some((val) => (isInList(articleTaxonomy?.allTopics, val)));
-              return matchProduct && matchIndustry;
-            }
-            if (filters.selectedProducts && filters.selectedGeography) {
-              // match product && geography
-              const matchProduct = filters.selectedProducts
-                .some((val) => (isInList(articleTaxonomy?.allTopics, val)));
-              const matchGeography = filters.selectedGeography
-                .some((val) => (isInList(articleTaxonomy?.allTopics, val)));
-              return matchProduct && matchGeography;
-            }
-            if (filters.selectedIndustries && filters.selectedGeography) {
-              // match industry && geography
-              const matchIndustry = filters.selectedIndustries
-                .some((val) => (isInList(articleTaxonomy?.allTopics, val)));
-              const matchGeography = filters.selectedGeography
-                .some((val) => (isInList(articleTaxonomy?.allTopics, val)));
-              return matchIndustry && matchGeography;
-            }
-
             const matchedFilter = filters[key]
               .some((val) => isInList(articleTaxonomy.allTopics, val));
             return matchedFilter;
@@ -438,7 +400,6 @@ import {
           const matchedFilter = filters[key].some((val) => isInList([article[key]], val));
           return matchedFilter;
         });
-  
         return (matchedAll && !isCardOnPage(article));
       });
   
@@ -473,11 +434,11 @@ import {
     const pageEnd = offset + limit;
     await filterArticles(feed, limit, offset);
     const articles = feed.data;
-  
+
     if (articles.length) {
       // results were found
       container.remove();
-    } else if (blogIndex.config.selectedProducts || blogIndex.config.selectedIndustries || blogIndex.config.selectedGeography) {
+    } else if (SELECTED.filter((selectedItems) => { return blogIndex.config[selectedItems];})) {
       // no user filtered results were found
       spinner.remove();
       const noMatches = document.createElement('p');
@@ -528,12 +489,16 @@ import {
     const filterText = document.createElement('p');
     filterText.classList.add('filter-text');
     filterText.textContent = await replacePlaceholder('filters');
-  
-    const productsDropdown = await buildFilter('products', taxonomy, articleFeedEl, blogIndex.config);
-    const industriesDropdown = await buildFilter('industries', taxonomy, articleFeedEl, blogIndex.config);
-    const geographyDropdown = await buildFilter('geography', taxonomy, articleFeedEl, blogIndex.config);
-  
-    filterWrapper.append(filterText, productsDropdown, industriesDropdown, geographyDropdown);
+   
+    filterWrapper.append(filterText);
+    filterArray = blogIndex.config.filters.replace(/\s/g, '').toLowerCase().split(',');
+   
+    filterArray.forEach(async (filter) => {
+      var dropdownName = filter + 'Dropdown';
+      dropdownName = await buildFilter(filter, taxonomy, articleFeedEl, blogIndex.config);
+      filterWrapper.append(dropdownName);
+    });
+    
     filterContainer.append(filterWrapper);
   
     parent.parentElement.insertBefore(filterContainer, parent);
@@ -568,6 +533,10 @@ import {
       el.innerHTML = '';
       await loadTaxonomy();
       if (blogIndex.config.filters) {
+        filterArray = blogIndex.config.filters.replace(/\s/g, '').toLowerCase().split(',');
+        filterArray.forEach(async (filter) => {
+          SELECTED.push('selected' + filter.charAt(0).toUpperCase() + filter.slice(1));
+        });
         decorateFeedFilter(el);
       }
       decorateArticleFeed(el);

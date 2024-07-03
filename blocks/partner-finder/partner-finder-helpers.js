@@ -60,7 +60,7 @@ export function computeTaxonomyFromTopics(topics, path) {
         }
       } else {
         // eslint-disable-next-line no-console
-        console.warn(`Unknown topic in tags list: ${tag} ${path ? `on page ${path}` : '(current page)'}`);
+        // console.warn(`Unknown topic in tags list: ${tag} ${path ? `on page ${path}` : '(current page)'}`);
       }
     });
     return { category, topics, visibleTopics, allTopics };
