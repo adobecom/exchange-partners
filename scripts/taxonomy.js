@@ -26,15 +26,9 @@ const TAXONOMY_FIELDS = Object.freeze({
     level2: 2,
     level3: 3,
   };
-  
-  const NO_INTERLINKS = Object.freeze('no-interlinks');
-  
-  const CATEGORIES = Object.freeze('categories');
-  const PRODUCTS = Object.freeze('products');
-  const INDUSTRIES = Object.freeze('industries');
-  const INTERNALS = Object.freeze('internals');
-  const GEOGRAPHY = Object.freeze('geography');
-
+  var taxonomy = {};
+  var listType = [];
+  var obj = {};
   
   /**
    * Filters a string to become a filename of a url
@@ -51,7 +45,7 @@ const TAXONOMY_FIELDS = Object.freeze({
     .replace(/--+/g, '-'); // remove multiple dashes
   
   const removeLineBreaks = (topic) => (topic?.replace(/\n/gm, ' ').trim());
-  const isProduct = (cat) => cat && cat.toLowerCase() === PRODUCTS;
+  const isProduct = (cat) => cat && cat.toLowerCase();
   
   const findItem = (topic, category, taxonomy) => [topic].map((t) => {
     if (!category && taxonomy.products[t]) {
@@ -167,86 +161,89 @@ const TAXONOMY_FIELDS = Object.freeze({
   
     return fetchTaxonomy(path)
       .then((json) => {
-        const taxonomy = parseTaxonomyJson(json.data, root, route);
+        taxonomy = parseTaxonomyJson(json.data, root, route);
+
+        listType = Object.keys(taxonomy.categories);
+
+        // Using reduce to create a new object from array
+        obj = listType.reduce((acc, current, index) => {
+          var upper = current.toUpperCase()
+          acc[upper] = Object.freeze(current);
+          return acc;
+        }, {});
+
+
+        obj.lookup = function(topic) {
+          return this.get(topic, type)
+            || this.get(topic.replace('Adobe ', ''), type)
+            || this.get(topic);
+        }
+
+        obj.get = function(topic, cat) {
+          // take first one of the list
+          const item = findItem(topic?.toLowerCase(), cat?.toLowerCase(), taxonomy);
   
-        return {
-          CATEGORIES,
-          INDUSTRIES,
-          INTERNALS,
-          PRODUCTS,
-          GEOGRAPHY,
-          NO_INTERLINKS,
-  
-          lookup(topic) {
-            return this.get(topic, PRODUCTS)
-              || this.get(topic.replace('Adobe ', ''), PRODUCTS)
-              || this.get(topic);
-          },
-  
-          get(topic, cat) {
-            // take first one of the list
-            const item = findItem(topic?.toLowerCase(), cat?.toLowerCase(), taxonomy);
-  
-            if (!item) { return null; }
-  
-            return {
-              name: item.name,
-              link: this.getLink(item.name, cat),
-              isUFT: this.isUFT(item.name, cat),
-              skipMeta: this.skipMeta(item.name, cat),
-              level: item.level,
-              parents: this.getParents(item.name, cat),
-              children: this.getChildren(item.name, cat),
-              category: this.getCategoryTitle(item.category),
-            };
-          },
-  
-          isUFT(topic, cat) {
+          if (!item) { return null; }
+
+          return {
+            name: item.name,
+            link: this.getLink(item.name, cat),
+            isUFT: this.isUFT(item.name, cat),
+            skipMeta: this.skipMeta(item.name, cat),
+            level: item.level,
+            parents: this.getParents(item.name, cat),
+            children: this.getChildren(item.name, cat),
+            category: this.getCategoryTitle(item.category),
+          };
+        }
+   
+        obj.isUFT = function(topic, cat) {
+          const t = findItem(topic, cat, taxonomy);
+          return t && !t.hidden;
+        }
+
+        obj.skipMeta = function(topic, cat) {
+          const t = findItem(topic, cat, taxonomy);
+          return t && t.skipMeta;
+        }
+
+        obj.getLink = function(topic, cat) {
+          const t = findItem(topic, cat, taxonomy);
+          const link = t?.link?.replace('.html', '');
+          return link;
+        }
+
+        obj.getParents = function (topics, cat) {
+          const list = typeof topics === 'string' ? [topics] : topics;
+          return list.reduce((parents, topic) => {
             const t = findItem(topic, cat, taxonomy);
-            return t && !t.hidden;
-          },
-  
-          skipMeta(topic, cat) {
-            const t = findItem(topic, cat, taxonomy);
-            return t && t.skipMeta;
-          },
-  
-          getLink(topic, cat) {
-            const t = findItem(topic, cat, taxonomy);
-            const link = t?.link?.replace('.html', '');
-            return link;
-          },
-  
-          getParents(topics, cat) {
-            const list = typeof topics === 'string' ? [topics] : topics;
-            return list.reduce((parents, topic) => {
-              const t = findItem(topic, cat, taxonomy);
-              if (t) {
-                if (t.level3) {
-                  if (parents.indexOf(t.level2) === -1) parents.push(t.level2);
-                  if (parents.indexOf(t.level1) === -1) parents.push(t.level1);
-                } else if (t.level2 && parents.indexOf(t.level1) === -1) {
-                  parents.push(t.level1);
-                }
+            if (t) {
+              if (t.level3) {
+                if (parents.indexOf(t.level2) === -1) parents.push(t.level2);
+                if (parents.indexOf(t.level1) === -1) parents.push(t.level1);
+              } else if (t.level2 && parents.indexOf(t.level1) === -1) {
+                parents.push(t.level1);
               }
-  
-              return parents;
-            }, []);
-          },
-  
-          getChildren(topic, cat) {
-            const children = isProduct(cat) ? taxonomy.productChildren : taxonomy.topicChildren;
-            return children[topic] ?? [];
-          },
-  
-          getCategory(cat) {
-            return taxonomy.categories[cat.toLowerCase()] ?? [];
-          },
-  
-          getCategoryTitle(cat) {
-            return cat.charAt(0).toUpperCase() + cat.substring(1);
-          },
-        };
+            }
+
+            return parents;
+          }, []);
+        }
+
+        obj.getChildren = function (topic, cat) {
+          const children = isProduct(cat) ? taxonomy.productChildren : taxonomy.topicChildren;
+          return children[topic] ?? [];
+        }
+
+        obj.getCategory = function (cat) {
+          return taxonomy.categories[cat.toLowerCase()] ?? [];
+        }
+
+        obj.getCategoryTitle = function (cat) {
+          return cat.charAt(0).toUpperCase() + cat.substring(1);
+        }
+
+        return obj;
       });
   };
   
