@@ -40,7 +40,8 @@ element {
 .filter-container,
 .selected-container {
   margin-top: auto;
-  padding-bottom: 2rem;
+  padding-bottom: 3rem;
+  background: #f8f8f8 !important;
 }
 
 .filter-container>div,
@@ -50,7 +51,7 @@ element {
   align-items: baseline;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 16px 0;
+  /* padding: 16px 0; */
   font-size: var(--body-font-size-xs);
   justify-content: center;
 }
