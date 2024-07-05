@@ -485,12 +485,6 @@ import {
     // FILTER CONTAINER
     const filterContainer = createTag('div', { class: 'filter-container' });
     const filterWrapper = createTag('div');
-  
-    const filterText = document.createElement('p');
-    filterText.classList.add('filter-text');
-    filterText.textContent = await replacePlaceholder('filters');
-   
-    filterWrapper.append(filterText);
     filterArray = blogIndex.config.filters.replace(/\s/g, '').toLowerCase().split(',');
    
     filterArray.forEach(async (filter) => {
