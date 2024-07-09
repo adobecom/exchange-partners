@@ -180,6 +180,7 @@ element {
     top: 2rem;
     left: 0;
     min-width: 320px;
+    font-size: var(--type-heading-l-size);
   }
 }
 
